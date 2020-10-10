@@ -20,5 +20,7 @@ bash: container checkenv
 listlabels: container checkenv
 	docker run ${DOCKER_RUN_CMD} ${DOCKER_IMAGE} python3 src/listlabels.py
 
+watch: container checkenv
+	docker run ${DOCKER_RUN_CMD} ${DOCKER_IMAGE} python3 src/watch.py
 
 .PHONY: container bash listlabels checkenv
