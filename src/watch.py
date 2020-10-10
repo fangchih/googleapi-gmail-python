@@ -27,16 +27,17 @@ def main(project_id, topic, sub):
     }
     watch_rsp = gmailclient.users().watch(userId=USER_ID, body=request).execute()
     print(watch_rsp, flush=True)
-    time.sleep(0.5)
+    time.sleep(0.1)
 
     subscriber = pubsub_v1.SubscriberClient()
 
     def callback(message):
-        print(message.data)
+        print(message.data, flush=True)
         message.ack()
+        time.sleep(0.1)
 
     print("watching ...", flush=True)
-    time.sleep(0.5)
+    time.sleep(0.1)
     future = subscriber.subscribe(subscription_name, callback)
 
     with subscriber:
