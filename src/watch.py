@@ -1,6 +1,7 @@
 from oauth2client.service_account import ServiceAccountCredentials
 import googleapiclient.discovery
 import os
+import time
 import httplib2
 from google.cloud import pubsub_v1
 
@@ -24,22 +25,25 @@ def main(project_id, topic, sub):
     request = {
         'topicName': topic_name
     }
-    watch_rsp = gmail.users().watch(userId=USER_ID, body=request).execute()
-    print(watch_rsp)
+    watch_rsp = gmailclient.users().watch(userId=USER_ID, body=request).execute()
+    print(watch_rsp, flush=True)
+    time.sleep(0.5)
 
     subscriber = pubsub_v1.SubscriberClient()
-    subscriber.create_subscription(name=subscription_name, topic=topic_name)
 
     def callback(message):
         print(message.data)
         message.ack()
 
+    print("watching ...", flush=True)
+    time.sleep(0.5)
     future = subscriber.subscribe(subscription_name, callback)
 
-    try:
-        future.result()
-    except KeyboardInterrupt:
-        future.cancel()
+    with subscriber:
+        try:
+            future.result()
+        except KeyboardInterrupt:
+            future.cancel()
 
 if __name__ == "__main__":
     main("gsmme-andersen", "gmailpushnotification", "gmailpushnotification")
