@@ -18,5 +18,5 @@ Installation
 -----------
 1. Provide authentication credentials to your application code by setting the environment variable `GOOGLE_APPLICATION_CREDENTIALS`
 2. `make container`
-3. `GOOGLE_APPLICATION_CREDENTIALS=$HOME/devkey/xxx.json make listlabel`
+3. `GMAIL_USER_ID=xxx@gmail.com GOOGLE_APPLICATION_CREDENTIALS=$HOME/devkey/xxx.json make listlabel`
 
