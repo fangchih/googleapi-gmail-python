@@ -2,6 +2,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import googleapiclient.discovery
 import os
 import time
+import json
 import httplib2
 from google.cloud import pubsub_v1
 
@@ -32,7 +33,15 @@ def main(project_id, topic, sub):
     subscriber = pubsub_v1.SubscriberClient()
 
     def callback(message):
-        print(message.data, flush=True)
+        m = json.loads(message.data)
+        print(m, flush=True)
+        historyId = m["historyId"]
+        print(historyId, flush=True)
+        history_rsp = gmailclient.users().history().list(userId=USER_ID, startHistoryId=historyId, maxResults=1).execute()
+        print(history_rsp, flush=True)
+        if history_rsp["history"] :
+            print(history_rsp["history"], flush=True)
+        
         message.ack()
         time.sleep(0.1)
 
@@ -45,6 +54,8 @@ def main(project_id, topic, sub):
             future.result()
         except KeyboardInterrupt:
             future.cancel()
+
+
 
 if __name__ == "__main__":
     main("gsmme-andersen", "gmailpushnotification", "gmailpushnotification")
